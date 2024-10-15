@@ -7,6 +7,7 @@ public class Main {
     static Scanner mainScanner = new Scanner(System.in);
     static Ledger ledger = new Ledger();
     static String fileInput = "./src/main/resources/transactions.csv";
+
     public static void main(String[] args) throws IOException {
 
 
@@ -22,7 +23,7 @@ public class Main {
     }
 
 
-    private static void homeScreen () {
+    private static void homeScreen() {
         boolean counter = true; //Loop control variable
         while (counter) {
             System.out.println("""
@@ -31,9 +32,8 @@ public class Main {
                     ===========================================
                           Please select an option
                            D- Add Deposit
-                           P- Make a Payment
-                           L- Ledger
-                           R- Reports
+                           P- Add a Payment
+                           L- Ledger book
                            X- Exit
                     ==========================================
                     """);
@@ -41,16 +41,14 @@ public class Main {
 
             switch (option.toUpperCase()) {
                 case "D":
-                    ledger.addDeposit(mainScanner,fileInput);
+                    ledger.addDeposit(mainScanner, fileInput);
 
                     break;
                 case "P":
-                    ledger.addPayment(mainScanner,fileInput);
+                    ledger.addPayment(mainScanner, fileInput);
                     break;
                 case "L":
                     ledger.ledgerScreen(mainScanner);
-                    break;
-                case "R":
                     break;
                 case "X":
                     System.out.println("Exiting the Accounting Application");
@@ -62,3 +60,5 @@ public class Main {
         }
     }
 }
+
+
