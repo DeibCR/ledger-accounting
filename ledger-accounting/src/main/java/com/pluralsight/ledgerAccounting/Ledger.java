@@ -1,15 +1,19 @@
 package com.pluralsight.ledgerAccounting;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Ledger {
      ArrayList<Transaction> transactions= new ArrayList<>(); // List that store transaction objects
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
      String fileInput = "./src/main/resources/transactions.csv";
 
 
@@ -21,12 +25,12 @@ public class Ledger {
 
           while((line= fileReader.readLine()) != null){
                String[] transactionData = line.split("\\|");
-               String date = transactionData[0];
-               String time= transactionData[1];
+               LocalDate date = LocalDate.parse(transactionData[0],dateFormatter);
+               LocalTime time= LocalTime.parse(transactionData[1],timeFormatter);
                String description = transactionData[2];
                String vendor = transactionData[3];
                double amount = Double.parseDouble(transactionData[4]);
-               transactions.add(new Transaction(date,time, description,vendor,amount));
+               transactions.add(new Transaction(date,time,description,vendor,amount));
 
           }
           fileReader.close();
@@ -75,7 +79,9 @@ public class Ledger {
           }
 
           //create a new deposit and add to the list
-          Transaction deposit = new Transaction(date,time,description,vendor,amount);
+          LocalDate localDate = LocalDate.parse(date,dateFormatter);
+          LocalTime localTime = LocalTime.parse(time,timeFormatter);
+          Transaction deposit = new Transaction(localDate,localTime,description,vendor,amount);
           transactions.add(deposit);
 
           try{
@@ -113,7 +119,9 @@ public class Ledger {
           }
 
           //create a new deposit and add to the list
-          Transaction payment = new Transaction(date,time,description,vendor,amount);
+          LocalDate localDate = LocalDate.parse(date,dateFormatter);
+          LocalTime localTime = LocalTime.parse(time,timeFormatter);
+          Transaction payment = new Transaction(localDate,localTime,description,vendor,amount);
           transactions.add(payment);
 
 
@@ -153,9 +161,15 @@ public class Ledger {
 
                        break;
                   case "D":
+                       List<Transaction> deposits = getDeposits();
+                       Collections.reverse(deposits);
+                       getDeposits().forEach(System.out::println);
 
                        break;
                   case "P":
+                       List<Transaction> payments = getPayments();
+                       Collections.reverse(payments);
+                       getPayments().forEach(System.out::println);
                        break;
                   case "R":
                        break;
@@ -170,13 +184,19 @@ public class Ledger {
 
    }
 
-
-
-
      // method to display all the transactions
      public List<Transaction> getAllTransactions (){
 
           return transactions;
+     }
+
+     //method to display all transactions that are deposits using .strem()., a sequence of elements that can be processed or filter
+     public List<Transaction> getDeposits(){
+          return transactions.stream().filter(transaction -> transaction.getAmount() > 0 ).collect(Collectors.toList());
+     }
+
+     public List<Transaction> getPayments(){
+          return transactions.stream().filter(transaction -> transaction.getAmount() <0).collect(Collectors.toList());
      }
 
 
