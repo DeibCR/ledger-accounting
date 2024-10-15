@@ -57,11 +57,12 @@ public class Ledger {
      public void addDeposit(Scanner scanner, String fileInput){
           System.out.println("Please enter the details for the new deposit");
 
-          System.out.println("Date (yyyy-MM-dd): ");
-          String date= scanner.nextLine();
+          LocalDate localDate = LocalDate.now();
+          LocalTime localTime = LocalTime.now();
 
-          System.out.println("Time (HH:mm:ss): ");
-          String time= scanner.nextLine();
+          System.out.println("Date (using current date):  "+localDate);
+          System.out.println("Time (using current time):  "+localTime);
+
 
           System.out.println("Description: ");
           String description = scanner.nextLine();
@@ -79,8 +80,7 @@ public class Ledger {
           }
 
           //create a new deposit and add to the list
-          LocalDate localDate = LocalDate.parse(date,dateFormatter);
-          LocalTime localTime = LocalTime.parse(time,timeFormatter);
+
           Transaction deposit = new Transaction(localDate,localTime,description,vendor,amount);
           transactions.add(deposit);
 
@@ -97,11 +97,12 @@ public class Ledger {
      public void addPayment(Scanner scanner, String fileInput){
           System.out.println("Please enter the details for the new payment");
 
-          System.out.println("Date (yyyy-MM-dd): ");
-          String date= scanner.nextLine();
+          LocalDate localDate = LocalDate.now();
+          LocalTime localTime = LocalTime.now();
 
-          System.out.println("Time (HH:mm:ss): ");
-          String time= scanner.nextLine();
+          System.out.println("Date (using current date):  "+localDate);
+          System.out.println("Time (using current time):  "+localTime);
+
 
           System.out.println("Description: ");
           String description = scanner.nextLine();
@@ -119,8 +120,6 @@ public class Ledger {
           }
 
           //create a new deposit and add to the list
-          LocalDate localDate = LocalDate.parse(date,dateFormatter);
-          LocalTime localTime = LocalTime.parse(time,timeFormatter);
           Transaction payment = new Transaction(localDate,localTime,description,vendor,amount);
           transactions.add(payment);
 
