@@ -3,6 +3,7 @@ package com.pluralsight.ledgerAccounting;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +59,7 @@ public class Ledger {
         System.out.println("Please enter the details for the new deposit");
 
         LocalDate localDate = LocalDate.now();
-        LocalTime localTime = LocalTime.now();
+        LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
 
         System.out.println("Date (using current date):  " + localDate);
         System.out.println("Time (using current time):  " + localTime);
@@ -98,7 +99,7 @@ public class Ledger {
         System.out.println("Please enter the details for the new payment");
 
         LocalDate localDate = LocalDate.now();
-        LocalTime localTime = LocalTime.now();
+        LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
 
         System.out.println("Date (using current date):  " + localDate);
         System.out.println("Time (using current time):  " + localTime);
@@ -222,6 +223,7 @@ public class Ledger {
 
             switch (option) {
                 case 1:
+                    monthToDateReport();
                     break;
                 case 2:
                     break;
@@ -243,6 +245,27 @@ public class Ledger {
     }
 
     //helpers methods for the report screen
+
+    public void monthToDateReport(){
+        LocalDate today= LocalDate.now();
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+
+        List<Transaction> monthToDateTransactions = transactions.stream().filter(transaction -> {
+            LocalDate transactionDate = transaction.getDate();
+            return (transactionDate.isEqual(startOfMonth) || transactionDate.isAfter(startOfMonth)) &&
+                    (transactionDate.isEqual(today) || transactionDate.isBefore(today));
+        })
+                .collect(Collectors.toList());
+
+        System.out.println("==========================================");
+        System.out.println("           Month-to-Date Report          ");
+        System.out.println("==========================================");
+        monthToDateTransactions.forEach(System.out::println);
+
+
+    }
+
+
 
 
 
