@@ -3,7 +3,6 @@ package com.pluralsight.ledgerAccounting;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
@@ -31,8 +30,25 @@ public class Ledger {
           fileReader.close();
      }
 
+     //method that saves each new transaction to the csv file
+     public void saveTransactions (Transaction newTransaction, String fileInput) throws IOException{
+          BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileInput,true)); //The true value append just the new transaction to the file
+
+          String line= String.format("%s|%s|%s|%s|%.2f", //write the transaction in the file in the same format
+                  newTransaction.getDate(),
+                  newTransaction.getTime(),
+                  newTransaction.getDescription(),
+                  newTransaction.getVendor(),
+                  newTransaction.getAmount());
+
+          fileWriter.write(line);
+          fileWriter.newLine();
+          fileWriter.close();
+
+     }
+
      //Method to add a new transaction (deposit) by prompting user
-     public void addDeposit(Scanner scanner){
+     public void addDeposit(Scanner scanner, String fileInput){
           System.out.println("Please enter the details for the new deposit");
 
           System.out.println("Date (yyyy-MM-dd): ");
@@ -59,12 +75,18 @@ public class Ledger {
           //create a new deposit and add to the list
           Transaction deposit = new Transaction(date,time,description,vendor,amount);
           transactions.add(deposit);
-          System.out.println("Deposit added successfully");
+
+          try{
+               saveTransactions(deposit,fileInput);
+               System.out.println("Deposit added and saved successfully");
+          } catch (IOException e){
+               System.out.println("Error saving the transaction: "+ e.getMessage());
+          }
 
      }
 
      //Method to add a new transaction (payment) by prompting user
-     public void addPayment(Scanner scanner){
+     public void addPayment(Scanner scanner, String fileInput){
           System.out.println("Please enter the details for the new payment");
 
           System.out.println("Date (yyyy-MM-dd): ");
@@ -91,10 +113,17 @@ public class Ledger {
           //create a new deposit and add to the list
           Transaction payment = new Transaction(date,time,description,vendor,amount);
           transactions.add(payment);
-          System.out.println("Payment added successfully");
+
+          try{
+               saveTransactions(payment, this.fileInput);
+               System.out.println("Payment added and saved successfully");
+          } catch (IOException e){
+               System.out.println("Error saving the transaction: "+ e.getMessage());
+          }
 
      }
 
+     public void ledgerScreen
 
 
      // method to display all the transactions

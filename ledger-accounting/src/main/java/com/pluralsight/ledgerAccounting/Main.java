@@ -6,20 +6,19 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner mainScanner = new Scanner(System.in);
+    static Ledger ledger = new Ledger();
+    static String fileInput = "./src/main/resources/transactions.csv";
     public static void main(String[] args) throws IOException {
-        Ledger ledger = new Ledger();
-        homeScreen();
 
-        /*
+
         try {
             ledger.loadTransactions("./src/main/resources/transactions.csv");
-            List<Transaction> allTransactions = ledger.getAllTransactions();
-            allTransactions.forEach(System.out::println);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-         */
+        homeScreen();
 
     }
 
@@ -43,8 +42,11 @@ public class Main {
 
             switch (option.toUpperCase()) {
                 case "D":
+                    ledger.addDeposit(mainScanner,fileInput);
+
                     break;
                 case "P":
+                    ledger.addPayment(mainScanner,fileInput);
                     break;
                 case "L":
                     break;
