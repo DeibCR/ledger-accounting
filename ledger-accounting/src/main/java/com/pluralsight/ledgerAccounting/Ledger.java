@@ -2,6 +2,7 @@ package com.pluralsight.ledgerAccounting;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ public class Ledger {
      String fileInput = "./src/main/resources/transactions.csv";
 
 
+     //method that read the transactions from the cvs file and added to the list transactions
      public void loadTransactions (String fileInput) throws IOException {
           BufferedReader fileReader = new BufferedReader(new FileReader(fileInput));
           String line;
@@ -105,7 +107,7 @@ public class Ledger {
           double amount = scanner.nextDouble();
           scanner.nextLine();
 
-          if (amount <= 0){
+          if (amount >= 0){
                System.out.println(" A payment amount must be negative");
                return;
           }
@@ -114,8 +116,10 @@ public class Ledger {
           Transaction payment = new Transaction(date,time,description,vendor,amount);
           transactions.add(payment);
 
+
+          //add the new transaction to the cvs
           try{
-               saveTransactions(payment, this.fileInput);
+               saveTransactions(payment, fileInput);
                System.out.println("Payment added and saved successfully");
           } catch (IOException e){
                System.out.println("Error saving the transaction: "+ e.getMessage());
@@ -123,11 +127,55 @@ public class Ledger {
 
      }
 
-     public void ledgerScreen
+   public void ledgerScreen (Scanner scanner){
+        boolean counter = true; //Loop control variable
+        while (counter) {
+             System.out.println("""
+                    ===========================================
+                                   Ledger Menu
+                    ===========================================
+                          Please select an option
+                           A- All transactions
+                           D- All deposits
+                           P- All Payments
+                           R- Reports
+                           H- Home
+                    ==========================================
+                    """);
+             String option = scanner.nextLine().trim();
+
+             switch (option.toUpperCase()) {
+                  case "A":
+                       List<Transaction> allTransactions = getAllTransactions();
+                       Collections.reverse(allTransactions);
+                       allTransactions.forEach(System.out::println);
+
+
+                       break;
+                  case "D":
+
+                       break;
+                  case "P":
+                       break;
+                  case "R":
+                       break;
+                  case "H":
+                       System.out.println("Exiting ledger Menu");
+                       counter = false;
+                       break;
+                  default:
+                       System.out.println("Invalid option. Please type 'A' 'D' 'P' 'R' or 'H'");
+             }
+        }
+
+   }
+
+
 
 
      // method to display all the transactions
      public List<Transaction> getAllTransactions (){
+
           return transactions;
      }
 

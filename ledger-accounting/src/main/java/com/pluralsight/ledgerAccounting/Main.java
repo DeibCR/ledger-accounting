@@ -1,7 +1,6 @@
 package com.pluralsight.ledgerAccounting;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -49,6 +48,7 @@ public class Main {
                     ledger.addPayment(mainScanner,fileInput);
                     break;
                 case "L":
+                    ledger.ledgerScreen(mainScanner);
                     break;
                 case "R":
                     break;
