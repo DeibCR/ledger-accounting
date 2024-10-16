@@ -278,7 +278,7 @@ public class Ledger {
                     ===========================================
                                    Reports Menu
                     ===========================================
-                    Please select an type the option you want to access in numeric format
+                    Please type the option you want to access in a numeric format
                            1- Month to Date
                            2- Previous Month
                            3- Year to Date
@@ -288,6 +288,7 @@ public class Ledger {
                     ==========================================
                     """);
             int option = scanner.nextInt();
+            scanner.nextLine();
 
             switch (option) {
                 case 1:
@@ -422,7 +423,7 @@ public class Ledger {
         ArrayList<Transaction> matchingVendors = new ArrayList<>();
 
         for (Transaction transaction: transactions){
-            if (transaction.getVendor().toLowerCase().contains(vendor)){
+            if (transaction.getVendor().toLowerCase().contains(vendor.toLowerCase())){
                 matchingVendors.add(transaction);
             }
         }
@@ -434,21 +435,36 @@ public class Ledger {
 
         String vendor = scanner.nextLine().trim();
 
+
         if (!vendor.equalsIgnoreCase("X")){
             String normalizeVendor = vendor.toLowerCase();
 
             ArrayList<Transaction> matchingVendors = findTransactionByVendor(normalizeVendor);
             if (!matchingVendors.isEmpty()){
                 System.out.println("Vendor found:");
-                    for (Transaction transaction: matchingVendors){
-                        System.out.println(transaction);
+                displayTransactions(matchingVendors);
 
-                    }
             }else {
-                System.out.println("Vendor not found");
+                System.out.println("No transactions found for that vendor");
             }
         }else {
             System.out.println("Returning");
+        }
+    }
+
+    public void displayTransactions(List<Transaction> transactions) {
+        System.out.println("----------------------------Search Results----------------------------");
+        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("-----------------------------------------------------------------------");
+
+        for (Transaction transaction : transactions) {
+
+            System.out.printf("%-12s %-8s %-20s %-10s %10.2f%n",
+                    transaction.getDate(),
+                    transaction.getTime(),
+                    transaction.getDescription(),
+                    transaction.getVendor(),
+                    transaction.getAmount());
         }
     }
 
