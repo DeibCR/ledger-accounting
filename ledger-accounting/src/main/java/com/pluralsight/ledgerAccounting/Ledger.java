@@ -117,9 +117,8 @@ public class Ledger {
         }
 
 
-
         Transaction deposit = new Transaction(localDate, localTime, description, vendor, amount);
-        transactions.add(deposit);
+        transactions.add(0,deposit);
 
         try {
             saveTransactions(deposit, fileInput);
@@ -159,7 +158,7 @@ public class Ledger {
 
 
         Transaction payment = new Transaction(localDate, localTime, description, vendor, amount);
-        transactions.add(payment);
+        transactions.add(0,payment);
 
 
         //add the new transaction to the cvs
