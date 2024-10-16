@@ -203,7 +203,16 @@ public class Ledger {
     }
 
 
-    public void reportsScreen (Scanner scanner){
+    public void reportsScreen(Scanner scanner) {
+
+        try {
+            transactions.clear(); // Clear the current list to avoid duplicates
+            loadTransactions(fileInput); // Load existing transactions from the csv
+        } catch (IOException e) {
+            System.out.println("Error loading transactions: " + e.getMessage());
+            return; // Exit if loading fails
+        }
+
         boolean counter = true; //Loop control variable
         while (counter) {
             System.out.println("""
@@ -226,8 +235,10 @@ public class Ledger {
                     monthToDateReport();
                     break;
                 case 2:
+                    previousMonthReport();
                     break;
                 case 3:
+                    yearToDateReport();
                     break;
                 case 4:
                     break;
@@ -246,15 +257,16 @@ public class Ledger {
 
     //helpers methods for the report screen
 
-    public void monthToDateReport(){
-        LocalDate today= LocalDate.now();
-        LocalDate startOfMonth = today.withDayOfMonth(1);
+    public void monthToDateReport() {
+        LocalDate today = LocalDate.now(); //Current date
+
+        LocalDate startOfMonth = today.withDayOfMonth(1);// First day of the current month
 
         List<Transaction> monthToDateTransactions = transactions.stream().filter(transaction -> {
-            LocalDate transactionDate = transaction.getDate();
-            return (transactionDate.isEqual(startOfMonth) || transactionDate.isAfter(startOfMonth)) &&
-                    (transactionDate.isEqual(today) || transactionDate.isBefore(today));
-        })
+                    LocalDate transactionDate = transaction.getDate();
+                    return (transactionDate.isEqual(startOfMonth) || transactionDate.isAfter(startOfMonth)) &&
+                            (transactionDate.isEqual(today) || transactionDate.isBefore(today));
+                })
                 .collect(Collectors.toList());
 
         System.out.println("==========================================");
@@ -262,12 +274,50 @@ public class Ledger {
         System.out.println("==========================================");
         monthToDateTransactions.forEach(System.out::println);
 
+    }
+
+    public void yearToDateReport() {
+        LocalDate today = LocalDate.now(); //Current date
+
+        LocalDate startOfYear = today.withDayOfYear(1);// First day of the current year
+
+        List<Transaction> yearToDateTransactions = transactions.stream().filter(transaction -> {
+                    LocalDate transactionDate = transaction.getDate();
+                    return (transactionDate.isEqual(startOfYear) || transactionDate.isAfter(startOfYear)) &&
+                            (transactionDate.isEqual(today) || transactionDate.isBefore(today));
+                })
+                .collect(Collectors.toList());
+
+        System.out.println("==========================================");
+        System.out.println("           Year-to-Date Report          ");
+        System.out.println("==========================================");
+        yearToDateTransactions.forEach(System.out::println);
 
     }
 
+    public void previousMonthReport() {
+        LocalDate today = LocalDate.now(); //Current date
 
+        LocalDate startOfCurrentMonth = today.withDayOfMonth(1); // First day of the current month
 
+        LocalDate endOfPreviousMonth = startOfCurrentMonth.minusDays(1); //Last day of the previous month
 
+        LocalDate startOfPreviousMonth = endOfPreviousMonth.withDayOfMonth(1); //Fist day of previous month
+
+        List<Transaction> previousMonthTransactions = transactions.stream()
+                .filter(transaction -> { //filtering with stream and filter, all the transactions that occurs between the s
+                    LocalDate transactionDate = transaction.getDate();
+                    return (transactionDate.isEqual(startOfPreviousMonth) || transactionDate.isAfter(startOfPreviousMonth)) &&
+                            (transactionDate.isEqual(endOfPreviousMonth) || transactionDate.isBefore(endOfPreviousMonth));
+                })
+                .collect(Collectors.toList());
+
+        // Print the report
+        System.out.println("==========================================");
+        System.out.println("         Previous Month Report            ");
+        System.out.println("==========================================");
+        previousMonthTransactions.forEach(System.out::println);
+    }
 
 
 }
