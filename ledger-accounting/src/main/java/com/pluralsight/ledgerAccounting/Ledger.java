@@ -34,22 +34,14 @@ public class Ledger {
             String option = scanner.nextLine().trim();
 
             switch (option.toUpperCase()) {  // to UpperCase to manage error in typo
-                case "D":
-                    registerDeposit(scanner, fileInput);
-
-                    break;
-                case "P":
-                    registerPayment(scanner, fileInput);
-                    break;
-                case "L":
-                    ledgerScreen(scanner);
-                    break;
-                case "X":
+                case "D" -> registerDeposit(scanner, fileInput);
+                case "P" -> registerPayment(scanner, fileInput);
+                case "L" -> ledgerScreen(scanner);
+                case "X" -> {
                     System.out.println("Exiting the Accounting Application");
                     counter = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please type 'D' 'P' 'L' 'R' or 'X'");
+                }
+                default -> System.out.println("Invalid option. Please type 'D' 'P' 'L' 'R' or 'X'");
             }
         }
     }
@@ -91,7 +83,7 @@ public class Ledger {
     }
 
 
-    public  void registerDeposit(Scanner scanner, String fileInput) {
+    public void registerDeposit(Scanner scanner, String fileInput) {
         System.out.println("Please enter the details for the new deposit");
 
         LocalDate localDate = LocalDate.now();
@@ -118,7 +110,7 @@ public class Ledger {
 
 
         Transaction deposit = new Transaction(localDate, localTime, description, vendor, amount);
-        transactions.add(0,deposit);
+        transactions.add(0, deposit);
 
         try {
             saveTransactions(deposit, fileInput);
@@ -158,7 +150,7 @@ public class Ledger {
 
 
         Transaction payment = new Transaction(localDate, localTime, description, vendor, amount);
-        transactions.add(0,payment);
+        transactions.add(0, payment);
 
 
         //add the new transaction to the cvs
@@ -390,16 +382,16 @@ public class Ledger {
 
     }
 
-    public void previousYear(){
+    public void previousYear() {
 
-        LocalDate today= LocalDate.now();
+        LocalDate today = LocalDate.now();
 
-        LocalDate startOfPreviousYear= today.minusYears(1).withDayOfYear(1);
+        LocalDate startOfPreviousYear = today.minusYears(1).withDayOfYear(1);
         LocalDate endOfPreviousYear = today.withDayOfYear(1).minusDays(1);
 
-        List<Transaction> previousYearTransactions= new ArrayList<>();
+        List<Transaction> previousYearTransactions = new ArrayList<>();
 
-        for (Transaction transaction: transactions){
+        for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousYear) && !transactionDate.isAfter(endOfPreviousYear)) {
                 previousYearTransactions.add(transaction);
@@ -417,36 +409,36 @@ public class Ledger {
 
     }
 
-      //Search by vendors methods
-    public ArrayList<Transaction> findTransactionByVendor (String vendor){
+    //Search by vendors methods
+    public ArrayList<Transaction> findTransactionByVendor(String vendor) {
         ArrayList<Transaction> matchingVendors = new ArrayList<>();
 
-        for (Transaction transaction: transactions){
-            if (transaction.getVendor().toLowerCase().contains(vendor.toLowerCase())){
+        for (Transaction transaction : transactions) {
+            if (transaction.getVendor().toLowerCase().contains(vendor.toLowerCase())) {
                 matchingVendors.add(transaction);
             }
         }
         return matchingVendors;
     }
 
-    public void vendorsSearch(Scanner scanner){
+    public void vendorsSearch(Scanner scanner) {
         System.out.println("Enter the vendor name or type 'X' to go back : ");
 
         String vendor = scanner.nextLine().trim();
 
 
-        if (!vendor.equalsIgnoreCase("X")){
+        if (!vendor.equalsIgnoreCase("X")) {
             String normalizeVendor = vendor.toLowerCase();
 
             ArrayList<Transaction> matchingVendors = findTransactionByVendor(normalizeVendor);
-            if (!matchingVendors.isEmpty()){
+            if (!matchingVendors.isEmpty()) {
                 System.out.println("Vendor found:");
                 displayTransactions(matchingVendors);
 
-            }else {
+            } else {
                 System.out.println("No transactions found for that vendor");
             }
-        }else {
+        } else {
             System.out.println("Returning");
         }
     }
@@ -466,10 +458,6 @@ public class Ledger {
                     transaction.getAmount());
         }
     }
-
-
-
-
 
 }
 
