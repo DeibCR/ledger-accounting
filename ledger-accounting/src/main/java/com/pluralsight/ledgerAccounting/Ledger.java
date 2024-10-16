@@ -156,20 +156,33 @@ public class Ledger {
                 case "A":
                     List<Transaction> allTransactions = getAllTransactions();
                     Collections.reverse(allTransactions);
+                    System.out.println("-------------------------------All Transactions----------------------------------");
+                    System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
+                    System.out.println("-----------------------------------------------------------------------------");
                     allTransactions.forEach(System.out::println);
+                    scanner.nextLine();
 
 
                     break;
                 case "D":
                     List<Transaction> deposits = getDeposits();
                     Collections.reverse(deposits);
+                    System.out.println("-------------------------------All Deposits----------------------------------");
+                    System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
+                    System.out.println("-----------------------------------------------------------------------------");
                     getDeposits().forEach(System.out::println);
+                    scanner.nextLine();
 
                     break;
                 case "P":
                     List<Transaction> payments = getPayments();
                     Collections.reverse(payments);
+                    System.out.println("-------------------------------All Payments----------------------------------");
+                    System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
+                    System.out.println("-----------------------------------------------------------------------------");
                     getPayments().forEach(System.out::println);
+                    scanner.nextLine();
+
                     break;
                 case "R":
                     reportsScreen(scanner);
@@ -271,8 +284,10 @@ public class Ledger {
 
         System.out.println("==========================================");
         System.out.println("           Month-to-Date Report          ");
+        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println("==========================================");
         monthToDateTransactions.forEach(System.out::println);
+
 
     }
 
@@ -290,6 +305,7 @@ public class Ledger {
 
         System.out.println("==========================================");
         System.out.println("           Year-to-Date Report          ");
+        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println("==========================================");
         yearToDateTransactions.forEach(System.out::println);
 
@@ -315,6 +331,7 @@ public class Ledger {
         // Print the report
         System.out.println("==========================================");
         System.out.println("         Previous Month Report            ");
+        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println("==========================================");
         previousMonthTransactions.forEach(System.out::println);
     }
