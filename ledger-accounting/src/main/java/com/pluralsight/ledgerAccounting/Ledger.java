@@ -153,7 +153,7 @@ public class Ledger {
             String option = scanner.nextLine().trim();
 
             switch (option.toUpperCase()) {
-                case "A":
+                case "A" -> {
                     List<Transaction> allTransactions = getAllTransactions();
                     Collections.reverse(allTransactions);
                     System.out.println("-------------------------------All Transactions----------------------------------");
@@ -161,10 +161,8 @@ public class Ledger {
                     System.out.println("-----------------------------------------------------------------------------");
                     allTransactions.forEach(System.out::println);
                     scanner.nextLine();
-
-
-                    break;
-                case "D":
+                }
+                case "D" -> {
                     List<Transaction> deposits = getDeposits();
                     Collections.reverse(deposits);
                     System.out.println("-------------------------------All Deposits----------------------------------");
@@ -172,9 +170,8 @@ public class Ledger {
                     System.out.println("-----------------------------------------------------------------------------");
                     getDeposits().forEach(System.out::println);
                     scanner.nextLine();
-
-                    break;
-                case "P":
+                }
+                case "P" -> {
                     List<Transaction> payments = getPayments();
                     Collections.reverse(payments);
                     System.out.println("-------------------------------All Payments----------------------------------");
@@ -182,17 +179,13 @@ public class Ledger {
                     System.out.println("-----------------------------------------------------------------------------");
                     getPayments().forEach(System.out::println);
                     scanner.nextLine();
-
-                    break;
-                case "R":
-                    reportsScreen(scanner);
-                    break;
-                case "H":
+                }
+                case "R" -> reportsScreen(scanner);
+                case "H" -> {
                     System.out.println("Exiting ledger Menu");
                     counter = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please type 'A' 'D' 'P' 'R' or 'H'");
+                }
+                default -> System.out.println("Invalid option. Please type 'A' 'D' 'P' 'R' or 'H'");
             }
         }
 
@@ -206,7 +199,7 @@ public class Ledger {
         return transactions;
     }
 
-    //method to display all transactions that are deposits, using .strem() a sequence of elements that can processed or filter
+    //method to display all transactions that are deposits, using .stream() a sequence of elements that can processed or filter
     public List<Transaction> getDeposits() {
         return transactions.stream().filter(transaction -> transaction.getAmount() > 0).collect(Collectors.toList());
     }
@@ -282,10 +275,9 @@ public class Ledger {
                 })
                 .collect(Collectors.toList());
 
-        System.out.println("==========================================");
-        System.out.println("           Month-to-Date Report          ");
+        System.out.println("----------------------------Month to Date Report-------------------------------");
         System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("==========================================");
+        System.out.println("-----------------------------------------------------------------------------");
         monthToDateTransactions.forEach(System.out::println);
 
 
@@ -303,10 +295,9 @@ public class Ledger {
                 })
                 .collect(Collectors.toList());
 
-        System.out.println("==========================================");
-        System.out.println("           Year-to-Date Report          ");
+        System.out.println("----------------------------Year to Date Report-------------------------------");
         System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("==========================================");
+        System.out.println("-----------------------------------------------------------------------------");
         yearToDateTransactions.forEach(System.out::println);
 
     }
@@ -329,11 +320,11 @@ public class Ledger {
                 .collect(Collectors.toList());
 
         // Print the report
-        System.out.println("==========================================");
-        System.out.println("         Previous Month Report            ");
+        System.out.println("----------------------------Previous Month-------------------------------");
         System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("==========================================");
+        System.out.println("-----------------------------------------------------------------------------");
         previousMonthTransactions.forEach(System.out::println);
+
     }
 
 
