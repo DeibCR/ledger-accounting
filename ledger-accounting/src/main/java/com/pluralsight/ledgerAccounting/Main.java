@@ -41,11 +41,11 @@ public class Main {
 
             switch (option.toUpperCase()) {
                 case "D":
-                    ledger.addDeposit(mainScanner, fileInput);
+                    ledger.newDeposit(mainScanner, fileInput);
 
                     break;
                 case "P":
-                    ledger.addPayment(mainScanner, fileInput);
+                    ledger.newPayment(mainScanner, fileInput);
                     break;
                 case "L":
                     ledger.ledgerScreen(mainScanner);
