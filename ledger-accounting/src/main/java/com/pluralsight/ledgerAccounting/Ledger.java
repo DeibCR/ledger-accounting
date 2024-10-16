@@ -11,16 +11,54 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Ledger {
-    ArrayList<Transaction> transactions = new ArrayList<>();
+    private ArrayList<Transaction> transactions = new ArrayList<>();
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     String fileInput = "./src/main/resources/transactions.csv";
 
 
+    public void homeScreen(Scanner scanner) {
+        boolean counter = true;
+        while (counter) {     //loop to keep the program running until user exit the program
+            System.out.println("""
+                    ===========================================
+                       Welcome to the accounting application
+                    ===========================================
+                        Please type an option to access
+                           D- Add Deposit
+                           P- Add a Payment
+                           L- Ledger book
+                           X- Exit
+                    ==========================================
+                    """);
+            String option = scanner.nextLine().trim();
+
+            switch (option.toUpperCase()) {  // to UpperCase to manage error in typo
+                case "D":
+                    registerDeposit(scanner, fileInput);
+
+                    break;
+                case "P":
+                    registerPayment(scanner, fileInput);
+                    break;
+                case "L":
+                    ledgerScreen(scanner);
+                    break;
+                case "X":
+                    System.out.println("Exiting the Accounting Application");
+                    counter = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please type 'D' 'P' 'L' 'R' or 'X'");
+            }
+        }
+    }
+
+
     public void loadTransactions(String fileInput) throws IOException {
         BufferedReader fileReader = new BufferedReader(new FileReader(fileInput));
         String line;
-        fileReader.readLine(); // skip the header
+        fileReader.readLine();
 
         while ((line = fileReader.readLine()) != null) {
             String[] transactionData = line.split("\\|");
@@ -35,11 +73,11 @@ public class Ledger {
         fileReader.close();
     }
 
-    //method that saves each new transaction to the csv file
-    public void saveTransactions(Transaction newTransaction, String fileInput) throws IOException {
-        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileInput, true)); //The true value append just the new transaction to the file
 
-        String line = String.format("%s|%s|%s|%s|%.2f", //write the transaction in the file in the same format
+    public void saveTransactions(Transaction newTransaction, String fileInput) throws IOException {
+        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileInput, true));
+
+        String line = String.format("%s|%s|%s|%s|%.2f",
                 newTransaction.getDate(),
                 newTransaction.getTime(),
                 newTransaction.getDescription(),
@@ -52,8 +90,8 @@ public class Ledger {
 
     }
 
-    //Method to add a new transaction (deposit) by prompting user
-    public void newDeposit(Scanner scanner, String fileInput) {
+
+    public  void registerDeposit(Scanner scanner, String fileInput) {
         System.out.println("Please enter the details for the new deposit");
 
         LocalDate localDate = LocalDate.now();
@@ -78,7 +116,7 @@ public class Ledger {
             return;
         }
 
-        //create a new deposit and add to the list
+
 
         Transaction deposit = new Transaction(localDate, localTime, description, vendor, amount);
         transactions.add(deposit);
@@ -87,15 +125,15 @@ public class Ledger {
             saveTransactions(deposit, fileInput);
             System.out.println("Deposit added and saved successfully");
         } catch (IOException e) {
-            System.out.println("Error saving the transaction: " + e.getMessage());
+            System.out.println("Error saving the transaction");
+            e.printStackTrace();
         }
 
     }
 
-    //Method to add a new transaction (payment) by prompting user
-    public void newPayment(Scanner scanner, String fileInput) {
-        System.out.println("Pl" +
-                "ease enter the details for the new payment");
+
+    public void registerPayment(Scanner scanner, String fileInput) {
+        System.out.println("Please enter the details for the new payment");
 
         LocalDate localDate = LocalDate.now();
         LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -119,7 +157,7 @@ public class Ledger {
             return;
         }
 
-        //create a new deposit and add to the list
+
         Transaction payment = new Transaction(localDate, localTime, description, vendor, amount);
         transactions.add(payment);
 
@@ -129,19 +167,20 @@ public class Ledger {
             saveTransactions(payment, fileInput);
             System.out.println("Payment added and saved successfully");
         } catch (IOException e) {
-            System.out.println("Error saving the transaction: " + e.getMessage());
+            System.out.println("Error saving the transaction");
+            e.printStackTrace();
         }
 
     }
 
     public void ledgerScreen(Scanner scanner) {
-        boolean counter = true; //Loop control variable
+        boolean counter = true;
         while (counter) {
             System.out.println("""
                     ===========================================
                                    Ledger Menu
                     ===========================================
-                          Please select an option
+                       Please type an option to access
                            A- All transactions
                            D- All deposits
                            P- All Payments
@@ -167,7 +206,7 @@ public class Ledger {
                     System.out.println("-------------------------------All Deposits----------------------------------");
                     System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
                     System.out.println("-----------------------------------------------------------------------------");
-                    getDeposits().forEach(System.out::println);
+                    deposits.forEach(System.out::println);
                     scanner.nextLine();
                 }
                 case "P" -> {
@@ -176,7 +215,7 @@ public class Ledger {
                     System.out.println("-------------------------------All Payments----------------------------------");
                     System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
                     System.out.println("-----------------------------------------------------------------------------");
-                    getPayments().forEach(System.out::println);
+                    payments.forEach(System.out::println);
                     scanner.nextLine();
                 }
                 case "R" -> reportsScreen(scanner);
@@ -192,13 +231,13 @@ public class Ledger {
 
     //Helpers methods to the ledger screen
 
-    // method to display all the transactions
+
     public List<Transaction> getAllTransactions() {
 
         return transactions;
     }
 
-    //method to display all transactions that are deposits
+
     public List<Transaction> getDeposits() {
         List<Transaction> deposits = new ArrayList<>();
 
@@ -210,10 +249,8 @@ public class Ledger {
         return deposits;
 
     }
-    // return transactions.stream().filter(transaction -> transaction.getAmount() > 0).collect(Collectors.toList());
 
 
-    //method to display all transactions that are payments
     public List<Transaction> getPayments() {
         List<Transaction> payments = new ArrayList<>();
 
@@ -225,24 +262,23 @@ public class Ledger {
         return payments;
     }
 
-
     public void reportsScreen(Scanner scanner) {
 
         try {
             transactions.clear(); // Clear the current list to avoid duplicates
             loadTransactions(fileInput); // Load existing transactions from the csv
         } catch (IOException e) {
-            System.out.println("Error loading transactions: " + e.getMessage());
-            return; // Exit if loading fails
+            System.out.println("Error loading transactions");
+            return;
         }
 
-        boolean counter = true; //Loop control variable
+        boolean counter = true;
         while (counter) {
             System.out.println("""
                     ===========================================
                                    Reports Menu
                     ===========================================
-                          Please select an option
+                    Please select an type the option you want to access in numeric format
                            1- Month to Date
                            2- Previous Month
                            3- Year to Date
@@ -267,6 +303,7 @@ public class Ledger {
                     previousYear();
                     break;
                 case 5:
+                    vendorsSearch(scanner);
                     break;
                 case 0:
                     System.out.println("Exiting Reports Menu");
@@ -284,13 +321,12 @@ public class Ledger {
     public void monthToDate() {
         LocalDate today = LocalDate.now();
 
-        LocalDate startOfMonth = today.withDayOfMonth(1);// First day of the current month
+        LocalDate startOfMonth = today.withDayOfMonth(1);
 
         List<Transaction> monthToDateTransactions = new ArrayList<>();
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
-            if ((transactionDate.isEqual(startOfMonth) || transactionDate.isAfter(startOfMonth)) &&
-                    (transactionDate.isEqual(today) || transactionDate.isBefore(today))) {
+            if (!transactionDate.isBefore(startOfMonth) && !transactionDate.isAfter(today)) {
                 monthToDateTransactions.add(transaction);
             }
         }
@@ -307,13 +343,12 @@ public class Ledger {
     public void yearToDate() {
         LocalDate today = LocalDate.now();
 
-        LocalDate startOfYear = today.withDayOfYear(1);// First day of the current year
+        LocalDate startOfYear = today.withDayOfYear(1);
 
         List<Transaction> yearToDateTransactions = new ArrayList<>();
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
-            if ((transactionDate.isEqual(startOfYear) || transactionDate.isAfter(startOfYear)) &&
-                    (transactionDate.isEqual(today) || transactionDate.isBefore(today))) {
+            if (!transactionDate.isBefore(startOfYear) && !transactionDate.isAfter(today)) {
                 yearToDateTransactions.add(transaction);
             }
         }
@@ -332,7 +367,7 @@ public class Ledger {
 
         LocalDate startOfCurrentMonth = today.withDayOfMonth(1);
 
-        LocalDate endOfPreviousMonth = startOfCurrentMonth.minusDays(1); //Last day of the previous month
+        LocalDate endOfPreviousMonth = startOfCurrentMonth.minusDays(1);
 
         LocalDate startOfPreviousMonth = endOfPreviousMonth.withDayOfMonth(1);
 
@@ -340,8 +375,7 @@ public class Ledger {
 
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
-            if ((transactionDate.isEqual(startOfPreviousMonth) || transactionDate.isAfter(startOfPreviousMonth)) &&
-                    (transactionDate.isEqual(endOfPreviousMonth) || transactionDate.isBefore(endOfPreviousMonth))) {
+            if (!transactionDate.isBefore(startOfPreviousMonth) && !transactionDate.isAfter(endOfPreviousMonth)) {
                 previousMonthTransactions.add(transaction);
             }
         }
@@ -367,18 +401,14 @@ public class Ledger {
 
         for (Transaction transaction: transactions){
             LocalDate transactionDate = transaction.getDate();
-            if ((transactionDate.isEqual(startOfPreviousYear) || transactionDate.isAfter(startOfPreviousYear)) &&
-                    (transactionDate.isEqual(endOfPreviousYear) || transactionDate.isBefore(endOfPreviousYear))) {
+            if (!transactionDate.isBefore(startOfPreviousYear) && !transactionDate.isAfter(endOfPreviousYear)) {
                 previousYearTransactions.add(transaction);
             }
         }
 
-
-        /
         System.out.println("----------------------------Previous Year Report-------------------------------");
         System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println("-----------------------------------------------------------------------------");
-
 
         for (Transaction transaction : previousYearTransactions) {
             System.out.println(transaction);
@@ -386,6 +416,44 @@ public class Ledger {
 
 
     }
+
+      //Search by vendors methods
+    public ArrayList<Transaction> findTransactionByVendor (String vendor){
+        ArrayList<Transaction> matchingVendors = new ArrayList<>();
+
+        for (Transaction transaction: transactions){
+            if (transaction.getVendor().toLowerCase().contains(vendor)){
+                matchingVendors.add(transaction);
+            }
+        }
+        return matchingVendors;
+    }
+
+    public void vendorsSearch(Scanner scanner){
+        System.out.println("Enter the vendor name or type 'X' to go back : ");
+
+        String vendor = scanner.nextLine().trim();
+
+        if (!vendor.equalsIgnoreCase("X")){
+            String normalizeVendor = vendor.toLowerCase();
+
+            ArrayList<Transaction> matchingVendors = findTransactionByVendor(normalizeVendor);
+            if (!matchingVendors.isEmpty()){
+                System.out.println("Vendor found:");
+                    for (Transaction transaction: matchingVendors){
+                        System.out.println(transaction);
+
+                    }
+            }else {
+                System.out.println("Vendor not found");
+            }
+        }else {
+            System.out.println("Returning");
+        }
+    }
+
+
+
 
 
 }
