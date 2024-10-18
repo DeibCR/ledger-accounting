@@ -22,25 +22,25 @@ public class Ledger {
     private String transactionsPath;
 
 
-    public Ledger(ResourceBundle messages, String transactionsPath) {
+    public Ledger(ResourceBundle messages, String transactionsPath) { //Constructor to ledger that receive parameters from resource bundle and the path to the csv file from the choose language
         this.messages = messages;
         this.transactionsPath = transactionsPath;
     }
 
-
+    //method that display the Home Screen menu
     public void homeScreen(Scanner scanner) {
         boolean counter = true;
         while (counter) {     //loop to keep the program running until user exit the program
 
-            System.out.println(messages.getString("homeScreen.menu"));
+            System.out.println(messages.getString("homeScreen.menu")); //read the .properties file with the string input to display
 
 
-            String option = scanner.nextLine().trim();
+            String option = scanner.nextLine().trim(); //Input error in typo handle
 
             switch (option.toUpperCase()) {  // to UpperCase to manage error in typo
-                case "D" -> registerTransaction(scanner);
+                case "D" -> registerTransaction(scanner); //call to the method that register a transaction
                 case "P" -> registerTransaction(scanner);
-                case "L" -> ledgerScreen(scanner);
+                case "L" -> ledgerScreen(scanner); //call to the method that display ledgerScreen
                 case "X" -> {
                     System.out.println(messages.getString("homeScreen.exit"));
                     counter = false;
@@ -52,28 +52,28 @@ public class Ledger {
 
 
     public void loadTransactions(String fileInput) throws IOException {
-        BufferedReader fileReader = new BufferedReader(new FileReader(fileInput));
-        String line;
-        fileReader.readLine();
+        BufferedReader fileReader = new BufferedReader(new FileReader(fileInput)); //File and Buffered reading to read csv file and manage the reading
+        String line; //variable to use for each line read on the csv
+        fileReader.readLine(); // skip the header on the csv file
 
         while ((line = fileReader.readLine()) != null) {
-            String[] transactionData = line.split("\\|");
+            String[] transactionData = line.split("\\|"); // split the csv file into individual variable of transaction after each '|' delimiter
             LocalDate date = LocalDate.parse(transactionData[0], dateFormatter);
             LocalTime time = LocalTime.parse(transactionData[1], timeFormatter);
             String description = transactionData[2];
             String vendor = transactionData[3];
             double amount = Double.parseDouble(transactionData[4]);
-            transactions.add(new Transaction(date, time, description, vendor, amount));
+            transactions.add(new Transaction(date, time, description, vendor, amount)); // Create a new transaction object from the parsed details and add it to the list
 
         }
-        fileReader.close();
+        fileReader.close(); // close the reader after reading
     }
 
 
     public void saveTransactions(Transaction newTransaction) throws IOException {
-        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(transactionsPath, true));
+        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(transactionsPath, true)); //create a file and buffered writer that write transactions in the same file, true value in append mode secure writing new content ad the end of the file instead of overwriting the content
 
-        String line = String.format("%s|%s|%s|%s|%.2f",
+        String line = String.format("%s|%s|%s|%s|%.2f", //provides a format in the specific format that the file use
                 newTransaction.getDate(),
                 newTransaction.getTime(),
                 newTransaction.getDescription(),
@@ -81,18 +81,18 @@ public class Ledger {
                 newTransaction.getAmount());
 
         fileWriter.write(line);
-        fileWriter.newLine();
+        fileWriter.newLine();//secure that the new transaction will be written on a new line
         fileWriter.close();
 
     }
 
     public void registerTransaction(Scanner scanner) {
-        System.out.println(messages.getString("register.transaction"));
+        System.out.println(messages.getString("register.transaction"));   //display of the prompts from a ResourceBundle call messages
 
         LocalDate localDate = LocalDate.now();
         LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS); // This helps eliminate te error of extra decimals in time recorded in the cvs
 
-        System.out.println(messages.getString("register.date") + localDate); //date and time data are automatically recorded
+        System.out.println(messages.getString("register.date") + localDate); //date and time data are automatically recorded and displayed at the moment of register a transaction
         System.out.println(messages.getString("register.time") + localTime);
 
 
@@ -106,7 +106,7 @@ public class Ledger {
         double amount = scanner.nextDouble();
         scanner.nextLine();
 
-        if (amount <= 0) {
+        if (amount <= 0) { //loop to verify if the input is positive or negative, depends on the result a transaction object is created and added to the list , the getDeposit and getPayment methods also create list for use in other moment in the app, in both cases the transaction is saved in the same csv file using saveTransactions ()
 
             Transaction payment = new Transaction(localDate, localTime, description, vendor, amount);
 
@@ -227,27 +227,16 @@ public class Ledger {
             scanner.nextLine();
 
             switch (option) {
-                case 1:
-                    monthToDate();
-                    break;
-                case 2:
-                    previousMonth();
-                    break;
-                case 3:
-                    yearToDate();
-                    break;
-                case 4:
-                    previousYear();
-                    break;
-                case 5:
-                    vendorsSearch(scanner);
-                    break;
-                case 0:
+                case 1 -> monthToDate();
+                case 2 -> previousMonth();
+                case 3 -> yearToDate();
+                case 4 -> previousYear();
+                case 5 -> vendorsSearch(scanner);
+                case 0 -> {
                     System.out.println("Exiting Reports Menu");
                     counter = false;
-                    break;
-                default:
-                    System.out.println("Invalid option. Please type '1' '2' '3' '4' or '5' or '0'");
+                }
+                default -> System.out.println("Invalid option. Please type '1' '2' '3' '4' or '5' or '0'");
             }
         }
 
