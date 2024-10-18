@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.ResourceBundle;
+
 
 public class Ledger {
     private ArrayList<Transaction> transactions = new ArrayList<>();
@@ -16,32 +18,34 @@ public class Ledger {
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
     String fileInput = "./src/main/resources/transactions.csv";
 
+    private ResourceBundle messages;
+    private String transactionsPath;
+
+
+    public Ledger(ResourceBundle messages, String transactionsPath) {
+        this.messages = messages;
+        this.transactionsPath = transactionsPath;
+    }
+
 
     public void homeScreen(Scanner scanner) {
         boolean counter = true;
         while (counter) {     //loop to keep the program running until user exit the program
-            System.out.println("""
-                    ===========================================
-                       Welcome to the accounting application
-                    ===========================================
-                        Please type an option to access
-                           D- Add Deposit
-                           P- Add a Payment
-                           L- Ledger book
-                           X- Exit
-                    ==========================================
-                    """);
+
+            System.out.println(messages.getString("homeScreen.menu"));
+
+
             String option = scanner.nextLine().trim();
 
             switch (option.toUpperCase()) {  // to UpperCase to manage error in typo
-                case "D" -> registerDeposit(scanner, fileInput);
-                case "P" -> registerPayment(scanner, fileInput);
+                case "D" -> registerDeposit(scanner);
+                case "P" -> registerPayment(scanner);
                 case "L" -> ledgerScreen(scanner);
                 case "X" -> {
-                    System.out.println("Exiting the Accounting Application");
+                    System.out.println(messages.getString("homeScreen.exit"));
                     counter = false;
                 }
-                default -> System.out.println("Invalid option. Please type 'D' 'P' 'L' 'R' or 'X'");
+                default -> System.out.println(messages.getString("homeScreen.error"));
             }
         }
     }
@@ -66,8 +70,8 @@ public class Ledger {
     }
 
 
-    public void saveTransactions(Transaction newTransaction, String fileInput) throws IOException {
-        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(fileInput, true));
+    public void saveTransactions(Transaction newTransaction) throws IOException {
+        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(transactionsPath, true));
 
         String line = String.format("%s|%s|%s|%s|%.2f",
                 newTransaction.getDate(),
@@ -83,68 +87,69 @@ public class Ledger {
     }
 
 
-    public void registerDeposit(Scanner scanner, String fileInput) {
-        System.out.println("Please enter the details for the new deposit");
+    public void registerDeposit(Scanner scanner) {
+        System.out.println(messages.getString("register.deposit"));
 
         LocalDate localDate = LocalDate.now();
-        LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS); // This helps eliminate te error of extra decimals in time
+        LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS); // This helps eliminate te error of extra decimals in time recorded in the cvs
 
-        System.out.println("Date (using current date):  " + localDate);
-        System.out.println("Time (using current time):  " + localTime);
+        System.out.println(messages.getString("register.date") + localDate); //date and time data are automatically recorded
+        System.out.println(messages.getString("register.time") + localTime);
 
 
-        System.out.println("Description: ");
+        System.out.println(messages.getString("register.description"));
         String description = scanner.nextLine();
 
-        System.out.println("Vendor: ");
+        System.out.println(messages.getString("register.vendor"));
         String vendor = scanner.nextLine();
 
-        System.out.println("amount (positive number): ");
+        System.out.println(messages.getString("register.amount"));
         double amount = scanner.nextDouble();
         scanner.nextLine();
 
         if (amount <= 0) {
-            System.out.println(" A deposit amount must be positive");
+            System.out.println(messages.getString("register.error1"));
             return;
         }
 
 
         Transaction deposit = new Transaction(localDate, localTime, description, vendor, amount);
+
         transactions.add(0, deposit);
 
         try {
-            saveTransactions(deposit, fileInput);
-            System.out.println("Deposit added and saved successfully");
+            saveTransactions(deposit);
+            System.out.println(messages.getString("register.message1"));
         } catch (IOException e) {
-            System.out.println("Error saving the transaction");
+            System.out.println(messages.getString("register.error2"));
             e.printStackTrace();
         }
 
     }
 
 
-    public void registerPayment(Scanner scanner, String fileInput) {
-        System.out.println("Please enter the details for the new payment");
+    public void registerPayment(Scanner scanner) {
+        System.out.println(messages.getString("register.payment"));
 
         LocalDate localDate = LocalDate.now();
         LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-        System.out.println("Date (using current date):  " + localDate);
-        System.out.println("Time (using current time):  " + localTime);
+        System.out.println(messages.getString("register.date") + localDate);
+        System.out.println(messages.getString("register.time") + localTime);
 
 
-        System.out.println("Description: ");
+        System.out.println(messages.getString("register.description"));
         String description = scanner.nextLine();
 
-        System.out.println("Vendor: ");
+        System.out.println(messages.getString("register.vendor"));
         String vendor = scanner.nextLine();
 
-        System.out.println("Amount (negative number): ");
+        System.out.println(messages.getString("register.amount1"));
         double amount = scanner.nextDouble();
         scanner.nextLine();
 
         if (amount >= 0) {
-            System.out.println(" A payment amount must be negative");
+            System.out.println(messages.getString("register.error3"));
             return;
         }
 
@@ -155,66 +160,60 @@ public class Ledger {
 
         //add the new transaction to the cvs
         try {
-            saveTransactions(payment, fileInput);
-            System.out.println("Payment added and saved successfully");
+            saveTransactions(payment);
+            System.out.println(messages.getString("register.message2"));
         } catch (IOException e) {
-            System.out.println("Error saving the transaction");
+            System.out.println(messages.getString("register.error2"));
             e.printStackTrace();
         }
 
     }
 
+    //Helper method to register a new transaction *Pending
+
+
     public void ledgerScreen(Scanner scanner) {
         boolean counter = true;
         while (counter) {
-            System.out.println("""
-                    ===========================================
-                                   Ledger Menu
-                    ===========================================
-                       Please type an option to access
-                           A- All transactions
-                           D- All deposits
-                           P- All Payments
-                           R- Reports
-                           H- Home
-                    ==========================================
-                    """);
+            System.out.println(messages.getString("ledger.menu"));
             String option = scanner.nextLine().trim();
 
             switch (option.toUpperCase()) {
                 case "A" -> {
                     List<Transaction> allTransactions = getAllTransactions();
-                    Collections.reverse(allTransactions);
+
+                    System.out.println(messages.getString("ledger.prompt1"));
+                    /*
                     System.out.println("-------------------------------All Transactions----------------------------------");
                     System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
                     System.out.println("-----------------------------------------------------------------------------");
+
+                     */
+
                     allTransactions.forEach(System.out::println);
-                    scanner.nextLine();
+                    System.out.println(messages.getString("ledger.line"));
+
                 }
                 case "D" -> {
                     List<Transaction> deposits = getDeposits();
                     Collections.reverse(deposits);
-                    System.out.println("-------------------------------All Deposits----------------------------------");
-                    System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-                    System.out.println("-----------------------------------------------------------------------------");
+                    System.out.println(messages.getString("ledger.prompt2"));
                     deposits.forEach(System.out::println);
-                    scanner.nextLine();
+                    System.out.println(messages.getString("ledger.line"));
                 }
                 case "P" -> {
                     List<Transaction> payments = getPayments();
                     Collections.reverse(payments);
-                    System.out.println("-------------------------------All Payments----------------------------------");
-                    System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-                    System.out.println("-----------------------------------------------------------------------------");
+                    System.out.println(messages.getString("ledger.prompt3"));
                     payments.forEach(System.out::println);
-                    scanner.nextLine();
+                    System.out.println(messages.getString("ledger.line"));
                 }
                 case "R" -> reportsScreen(scanner);
                 case "H" -> {
-                    System.out.println("Exiting ledger Menu");
+                    System.out.println(messages.getString("ledger.exit"));
                     counter = false;
                 }
-                default -> System.out.println("Invalid option. Please type 'A' 'D' 'P' 'R' or 'H'");
+                default -> System.out.println(messages.getString("ledger.error"));
             }
         }
 
@@ -224,7 +223,7 @@ public class Ledger {
 
 
     public List<Transaction> getAllTransactions() {
-
+    Collections.reverse(transactions);
         return transactions;
     }
 
@@ -255,29 +254,11 @@ public class Ledger {
 
     public void reportsScreen(Scanner scanner) {
 
-        try {
-            transactions.clear(); // Clear the current list to avoid duplicates
-            loadTransactions(fileInput); // Load existing transactions from the csv
-        } catch (IOException e) {
-            System.out.println("Error loading transactions");
-            return;
-        }
+
 
         boolean counter = true;
         while (counter) {
-            System.out.println("""
-                    ===========================================
-                                   Reports Menu
-                    ===========================================
-                    Please type the option you want to access in a numeric format
-                           1- Month to Date
-                           2- Previous Month
-                           3- Year to Date
-                           4- Previous Year
-                           5- Search by Vendor
-                           0- Back
-                    ==========================================
-                    """);
+            System.out.println(messages.getString("reports.menu"));
             int option = scanner.nextInt();
             scanner.nextLine();
 
@@ -312,23 +293,21 @@ public class Ledger {
 
     public void monthToDate() {
         LocalDate today = LocalDate.now();
-
         LocalDate startOfMonth = today.withDayOfMonth(1);
 
         List<Transaction> monthToDateTransactions = new ArrayList<>();
+
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfMonth) && !transactionDate.isAfter(today)) {
-                monthToDateTransactions.add(transaction);
+                monthToDateTransactions.add(0,transaction);
+               // Collections.reverse(monthToDateTransactions);
             }
         }
 
-        System.out.println("----------------------------Month to Date Report-------------------------------");
-        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("-----------------------------------------------------------------------------");
-        for (Transaction transaction : monthToDateTransactions) {
-            System.out.println(transaction);
-        }
+        System.out.println(messages.getString("reports.prompt1"));
+        monthToDateTransactions.forEach(System.out::println);
+        System.out.println(messages.getString("reports.line"));
 
     }
 
@@ -338,19 +317,19 @@ public class Ledger {
         LocalDate startOfYear = today.withDayOfYear(1);
 
         List<Transaction> yearToDateTransactions = new ArrayList<>();
+
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfYear) && !transactionDate.isAfter(today)) {
-                yearToDateTransactions.add(transaction);
+                yearToDateTransactions.add(0,transaction);
+
             }
         }
 
-        System.out.println("----------------------------Year to Date Report-------------------------------");
-        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("-----------------------------------------------------------------------------");
-        for (Transaction transaction : yearToDateTransactions) {
-            System.out.println(transaction);
-        }
+        System.out.println(messages.getString("reports.prompt3"));
+        yearToDateTransactions.forEach(System.out::println);
+        System.out.println(messages.getString("reports.line"));
+
 
     }
 
@@ -358,9 +337,7 @@ public class Ledger {
         LocalDate today = LocalDate.now();
 
         LocalDate startOfCurrentMonth = today.withDayOfMonth(1);
-
         LocalDate endOfPreviousMonth = startOfCurrentMonth.minusDays(1);
-
         LocalDate startOfPreviousMonth = endOfPreviousMonth.withDayOfMonth(1);
 
         List<Transaction> previousMonthTransactions = new ArrayList<>();
@@ -368,17 +345,15 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousMonth) && !transactionDate.isAfter(endOfPreviousMonth)) {
-                previousMonthTransactions.add(transaction);
+                previousMonthTransactions.add(0,transaction);
+              //  Collections.reverse(previousMonthTransactions);
             }
         }
 
 
-        System.out.println("----------------------------Previous Month-------------------------------");
-        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("-----------------------------------------------------------------------------");
-        for (Transaction transaction : previousMonthTransactions) {
-            System.out.println(transaction);
-        }
+        System.out.println(messages.getString("reports.prompt2"));
+        previousMonthTransactions.forEach(System.out::println);
+        System.out.println(messages.getString("reports.line"));
 
     }
 
@@ -391,20 +366,18 @@ public class Ledger {
 
         List<Transaction> previousYearTransactions = new ArrayList<>();
 
+
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousYear) && !transactionDate.isAfter(endOfPreviousYear)) {
-                previousYearTransactions.add(transaction);
+                previousYearTransactions.add(0,transaction);
+                //Collections.reverse(previousYearTransactions);
             }
         }
 
-        System.out.println("----------------------------Previous Year Report-------------------------------");
-        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("-----------------------------------------------------------------------------");
-
-        for (Transaction transaction : previousYearTransactions) {
-            System.out.println(transaction);
-        }
+        System.out.println(messages.getString("reports.prompt4"));
+        previousYearTransactions.forEach(System.out::println);
+        System.out.println(messages.getString("reports.line"));
 
 
     }
@@ -422,40 +395,24 @@ public class Ledger {
     }
 
     public void vendorsSearch(Scanner scanner) {
-        System.out.println("Enter the vendor name or type 'X' to go back : ");
+        System.out.println(messages.getString("vendor.prompt"));
 
         String vendor = scanner.nextLine().trim();
-
 
         if (!vendor.equalsIgnoreCase("X")) {
             String normalizeVendor = vendor.toLowerCase();
 
             ArrayList<Transaction> matchingVendors = findTransactionByVendor(normalizeVendor);
             if (!matchingVendors.isEmpty()) {
-                System.out.println("Vendor found:");
-                displayTransactions(matchingVendors);
+                System.out.println(messages.getString("vendor.message1"));
+                Collections.reverse(matchingVendors);
+                matchingVendors.forEach(System.out::println);
 
             } else {
-                System.out.println("No transactions found for that vendor");
+                System.out.println(messages.getString(messages.getString("vendor.message2")));
             }
         } else {
-            System.out.println("Returning");
-        }
-    }
-
-    public void displayTransactions(List<Transaction> transactions) {
-        System.out.println("----------------------------Search Results----------------------------");
-        System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-        System.out.println("-----------------------------------------------------------------------");
-
-        for (Transaction transaction : transactions) {
-
-            System.out.printf("%-12s %-8s %-20s %-10s %10.2f%n",
-                    transaction.getDate(),
-                    transaction.getTime(),
-                    transaction.getDescription(),
-                    transaction.getVendor(),
-                    transaction.getAmount());
+            System.out.println(messages.getString("vendor.message3"));
         }
     }
 
