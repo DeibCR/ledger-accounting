@@ -29,7 +29,7 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        /*
+
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -38,7 +38,7 @@ public class Main {
             }
         });
 
-*/
+
 
         ledger.homeScreen(mainScanner);
 

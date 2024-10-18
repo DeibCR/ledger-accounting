@@ -54,3 +54,24 @@ The **Accounting Ledger Menu** allows to display transactions in different views
 ![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\04.JPG)
 
 ![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\05.JPG)
+
+### Reports Menu
+
+Provide with filters options for generate reports
+
+- **1** Month to Date
+- **2** Previous Month
+- **3** Year to Date
+- **4** Previous Year
+- **5** Search By Vendor
+- **0** Back
+
+![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\06.JPG) 
+
+![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\07.JPG)
+
+## Code Structure 
+
+### Transaction Class
+
+Responsable to represent and shape objects type transaction
