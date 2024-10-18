@@ -47,9 +47,12 @@ public class Main {
     }
 
     private static void selectLanguage(){
-        System.out.println(" Select your preferred language / Seleccione su idioma preferido:");
-        System.out.println("1. English");
-        System.out.println("2. Spanish");
+        System.out.println("==================================================================================");
+        System.out.println("                  Language Selection / Selección de Idioma");
+        System.out.println(" Please select your preferred language - Por favor seleccione su idioma preferido:");
+        System.out.println();
+        System.out.println("1. EN- English");
+        System.out.println("2. ES- Spanish");
 
         int chooseLanguage = mainScanner.nextInt();
         mainScanner.nextLine();

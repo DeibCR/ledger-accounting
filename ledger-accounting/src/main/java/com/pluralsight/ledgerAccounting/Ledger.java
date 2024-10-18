@@ -110,7 +110,7 @@ public class Ledger {
 
             Transaction payment = new Transaction(localDate, localTime, description, vendor, amount);
 
-            transactions.add( payment);
+            transactions.add(payment);
             getPayments();
             try {
                 saveTransactions(payment);
@@ -124,7 +124,7 @@ public class Ledger {
         } else {
             Transaction deposit = new Transaction(localDate, localTime, description, vendor, amount);
 
-            transactions.add( deposit);
+            transactions.add(deposit);
             getPayments();
             try {
                 saveTransactions(deposit);
@@ -136,10 +136,6 @@ public class Ledger {
 
         }
     }
-
-
-    //Helper method to register a new transaction *Pending
-
 
     public void ledgerScreen(Scanner scanner) {
         boolean counter = true;
@@ -275,7 +271,7 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfYear) && !transactionDate.isAfter(today)) {
-                yearToDateTransactions.add( transaction);
+                yearToDateTransactions.add(transaction);
 
 
             }
@@ -326,7 +322,7 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousYear) && !transactionDate.isAfter(endOfPreviousYear)) {
-                previousYearTransactions.add( transaction);
+                previousYearTransactions.add(transaction);
 
             }
         }
