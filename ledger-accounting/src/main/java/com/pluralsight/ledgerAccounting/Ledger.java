@@ -38,8 +38,8 @@ public class Ledger {
             String option = scanner.nextLine().trim();
 
             switch (option.toUpperCase()) {  // to UpperCase to manage error in typo
-                case "D" -> registerDeposit(scanner);
-                case "P" -> registerPayment(scanner);
+                case "D" -> registerTransaction(scanner);
+                case "P" -> registerTransaction(scanner);
                 case "L" -> ledgerScreen(scanner);
                 case "X" -> {
                     System.out.println(messages.getString("homeScreen.exit"));
@@ -86,9 +86,8 @@ public class Ledger {
 
     }
 
-
-    public void registerDeposit(Scanner scanner) {
-        System.out.println(messages.getString("register.deposit"));
+    public void registerTransaction(Scanner scanner) {
+        System.out.println(messages.getString("register.transaction"));
 
         LocalDate localDate = LocalDate.now();
         LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS); // This helps eliminate te error of extra decimals in time recorded in the cvs
@@ -108,66 +107,36 @@ public class Ledger {
         scanner.nextLine();
 
         if (amount <= 0) {
-            System.out.println(messages.getString("register.error1"));
-            return;
+
+            Transaction payment = new Transaction(localDate, localTime, description, vendor, amount);
+
+            transactions.add( payment);
+            getPayments();
+            try {
+                saveTransactions(payment);
+                System.out.println(messages.getString("register.message2"));
+            } catch (IOException e) {
+                System.out.println(messages.getString("register.error2"));
+                e.printStackTrace();
+            }
+
+
+        } else {
+            Transaction deposit = new Transaction(localDate, localTime, description, vendor, amount);
+
+            transactions.add( deposit);
+            getPayments();
+            try {
+                saveTransactions(deposit);
+                System.out.println(messages.getString("register.message2"));
+            } catch (IOException e) {
+                System.out.println(messages.getString("register.error2"));
+                e.printStackTrace();
+            }
+
         }
-
-
-        Transaction deposit = new Transaction(localDate, localTime, description, vendor, amount);
-
-        transactions.add(0, deposit);
-
-        try {
-            saveTransactions(deposit);
-            System.out.println(messages.getString("register.message1"));
-        } catch (IOException e) {
-            System.out.println(messages.getString("register.error2"));
-            e.printStackTrace();
-        }
-
     }
 
-
-    public void registerPayment(Scanner scanner) {
-        System.out.println(messages.getString("register.payment"));
-
-        LocalDate localDate = LocalDate.now();
-        LocalTime localTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-
-        System.out.println(messages.getString("register.date") + localDate);
-        System.out.println(messages.getString("register.time") + localTime);
-
-
-        System.out.println(messages.getString("register.description"));
-        String description = scanner.nextLine();
-
-        System.out.println(messages.getString("register.vendor"));
-        String vendor = scanner.nextLine();
-
-        System.out.println(messages.getString("register.amount1"));
-        double amount = scanner.nextDouble();
-        scanner.nextLine();
-
-        if (amount >= 0) {
-            System.out.println(messages.getString("register.error3"));
-            return;
-        }
-
-
-        Transaction payment = new Transaction(localDate, localTime, description, vendor, amount);
-        transactions.add(0, payment);
-
-
-        //add the new transaction to the cvs
-        try {
-            saveTransactions(payment);
-            System.out.println(messages.getString("register.message2"));
-        } catch (IOException e) {
-            System.out.println(messages.getString("register.error2"));
-            e.printStackTrace();
-        }
-
-    }
 
     //Helper method to register a new transaction *Pending
 
@@ -195,17 +164,17 @@ public class Ledger {
 
                 }
                 case "D" -> {
-                    List<Transaction> deposits = getDeposits();
-                    Collections.reverse(deposits);
+                    //List<Transaction> deposits = getDeposits();
+                    //  Collections.reverse(deposits);
                     System.out.println(messages.getString("ledger.prompt2"));
-                    deposits.forEach(System.out::println);
+                    getDeposits().forEach(System.out::println);
                     System.out.println(messages.getString("ledger.line"));
                 }
                 case "P" -> {
-                    List<Transaction> payments = getPayments();
-                    Collections.reverse(payments);
+                    //List<Transaction> payments = getPayments();
+                    //Collections.reverse(payments);
                     System.out.println(messages.getString("ledger.prompt3"));
-                    payments.forEach(System.out::println);
+                    getPayments().forEach(System.out::println);
                     System.out.println(messages.getString("ledger.line"));
                 }
                 case "R" -> reportsScreen(scanner);
@@ -223,7 +192,7 @@ public class Ledger {
 
 
     public List<Transaction> getAllTransactions() {
-    Collections.reverse(transactions);
+        Collections.reverse(transactions);
         return transactions;
     }
 
@@ -236,6 +205,7 @@ public class Ledger {
                 deposits.add(transaction);
             }
         }
+        Collections.reverse(deposits);
         return deposits;
 
     }
@@ -249,11 +219,11 @@ public class Ledger {
                 payments.add(transaction);
             }
         }
+        Collections.reverse(payments);
         return payments;
     }
 
     public void reportsScreen(Scanner scanner) {
-
 
 
         boolean counter = true;
@@ -300,8 +270,8 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfMonth) && !transactionDate.isAfter(today)) {
-                monthToDateTransactions.add(0,transaction);
-               // Collections.reverse(monthToDateTransactions);
+                monthToDateTransactions.add(0, transaction);
+                // Collections.reverse(monthToDateTransactions);
             }
         }
 
@@ -321,7 +291,7 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfYear) && !transactionDate.isAfter(today)) {
-                yearToDateTransactions.add(0,transaction);
+                yearToDateTransactions.add(0, transaction);
 
             }
         }
@@ -345,8 +315,8 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousMonth) && !transactionDate.isAfter(endOfPreviousMonth)) {
-                previousMonthTransactions.add(0,transaction);
-              //  Collections.reverse(previousMonthTransactions);
+                previousMonthTransactions.add(0, transaction);
+                //  Collections.reverse(previousMonthTransactions);
             }
         }
 
@@ -370,7 +340,7 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousYear) && !transactionDate.isAfter(endOfPreviousYear)) {
-                previousYearTransactions.add(0,transaction);
+                previousYearTransactions.add(0, transaction);
                 //Collections.reverse(previousYearTransactions);
             }
         }

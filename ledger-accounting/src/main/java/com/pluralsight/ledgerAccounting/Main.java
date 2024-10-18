@@ -41,13 +41,15 @@ public class Main {
         mainScanner.nextLine();
 
         switch (chooseLanguage){
+            case 1:setLanguage("en", "US"); //Default to English
+                transactionsPath= "./src/main/resources/transactionss.csv";
+                break;
             case 2:
                 setLanguage("es", "ES"); //Spanish
                 transactionsPath= "./src/main/resources/transacciones.csv";
                 break;
             default:
-                setLanguage("en", "US"); //Default to English
-                transactionsPath= "./src/main/resources/transactions.csv";
+
         }
     }
 
