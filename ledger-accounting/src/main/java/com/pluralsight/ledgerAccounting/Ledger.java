@@ -16,7 +16,7 @@ public class Ledger {
     private ArrayList<Transaction> transactions = new ArrayList<>();
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-    String fileInput = "./src/main/resources/transactions.csv";
+
 
     private ResourceBundle messages;
     private String transactionsPath;
@@ -149,30 +149,23 @@ public class Ledger {
 
             switch (option.toUpperCase()) {
                 case "A" -> {
-                    List<Transaction> allTransactions = getAllTransactions();
+
 
                     System.out.println(messages.getString("ledger.prompt1"));
-                    /*
-                    System.out.println("-------------------------------All Transactions----------------------------------");
-                    System.out.printf("%-12s %-8s %-20s %-10s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
-                    System.out.println("-----------------------------------------------------------------------------");
 
-                     */
 
-                    allTransactions.forEach(System.out::println);
+                    getAllTransactions().forEach(System.out::println);
                     System.out.println(messages.getString("ledger.line"));
 
                 }
                 case "D" -> {
-                    //List<Transaction> deposits = getDeposits();
-                    //  Collections.reverse(deposits);
+
                     System.out.println(messages.getString("ledger.prompt2"));
                     getDeposits().forEach(System.out::println);
                     System.out.println(messages.getString("ledger.line"));
                 }
                 case "P" -> {
-                    //List<Transaction> payments = getPayments();
-                    //Collections.reverse(payments);
+
                     System.out.println(messages.getString("ledger.prompt3"));
                     getPayments().forEach(System.out::println);
                     System.out.println(messages.getString("ledger.line"));
@@ -192,8 +185,9 @@ public class Ledger {
 
 
     public List<Transaction> getAllTransactions() {
-        Collections.reverse(transactions);
-        return transactions;
+        List<Transaction> reversedTransactions = new ArrayList<>(transactions);
+        Collections.reverse(reversedTransactions);
+        return reversedTransactions;
     }
 
 
@@ -270,10 +264,11 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfMonth) && !transactionDate.isAfter(today)) {
-                monthToDateTransactions.add(0, transaction);
-                // Collections.reverse(monthToDateTransactions);
+                monthToDateTransactions.add(transaction);
+
             }
         }
+        Collections.reverse(monthToDateTransactions);
 
         System.out.println(messages.getString("reports.prompt1"));
         monthToDateTransactions.forEach(System.out::println);
@@ -291,10 +286,12 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfYear) && !transactionDate.isAfter(today)) {
-                yearToDateTransactions.add(0, transaction);
+                yearToDateTransactions.add( transaction);
+
 
             }
         }
+        Collections.reverse(yearToDateTransactions);
 
         System.out.println(messages.getString("reports.prompt3"));
         yearToDateTransactions.forEach(System.out::println);
@@ -315,11 +312,11 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousMonth) && !transactionDate.isAfter(endOfPreviousMonth)) {
-                previousMonthTransactions.add(0, transaction);
-                //  Collections.reverse(previousMonthTransactions);
+                previousMonthTransactions.add(transaction);
+
             }
         }
-
+        Collections.reverse(previousMonthTransactions);
 
         System.out.println(messages.getString("reports.prompt2"));
         previousMonthTransactions.forEach(System.out::println);
@@ -340,10 +337,11 @@ public class Ledger {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = transaction.getDate();
             if (!transactionDate.isBefore(startOfPreviousYear) && !transactionDate.isAfter(endOfPreviousYear)) {
-                previousYearTransactions.add(0, transaction);
-                //Collections.reverse(previousYearTransactions);
+                previousYearTransactions.add( transaction);
+
             }
         }
+        Collections.reverse(previousYearTransactions);
 
         System.out.println(messages.getString("reports.prompt4"));
         previousYearTransactions.forEach(System.out::println);

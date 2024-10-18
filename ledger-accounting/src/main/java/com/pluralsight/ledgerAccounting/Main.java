@@ -2,10 +2,14 @@ package com.pluralsight.ledgerAccounting;
 
 
 
+import com.pluralsight.ledgerAccounting.forms.LedgerAccounting;
+
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.ResourceBundle;
 import java.util.Locale;
+
+import javax.swing.*;
 
 
 public class Main {
@@ -25,6 +29,16 @@ public class Main {
             throw new RuntimeException(e);
         }
 
+        /*
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                LedgerAccounting ledgerAccounting = new LedgerAccounting();
+                ledgerAccounting.setVisible(true);
+            }
+        });
+
+*/
 
         ledger.homeScreen(mainScanner);
 
