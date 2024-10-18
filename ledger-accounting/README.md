@@ -75,3 +75,21 @@ Provide with filters options for generate reports
 ### Transaction Class
 
 Responsable to represent and shape objects type transaction
+
+
+### Ledger Class
+
+### main Class
+
+
+
+
+
+
+## Interesting Code: ResourceBundle and Locale
+
+![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\08.JPG)
+
+![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\09.JPG)
+
+![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\10.JPG)

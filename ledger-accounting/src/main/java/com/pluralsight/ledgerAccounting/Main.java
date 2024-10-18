@@ -30,7 +30,7 @@ public class Main {
         }
 
 
-
+  /*      //this line sof code initialize
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 LedgerAccounting ledgerAccounting = new LedgerAccounting();
@@ -38,7 +38,7 @@ public class Main {
             }
         });
 
-
+  */
 
         ledger.homeScreen(mainScanner);
 
@@ -62,7 +62,7 @@ public class Main {
                 transactionsPath= "./src/main/resources/transactionss.csv";
                 break;
             case 2:
-                setLanguage("es", "ES"); //Spanish
+                setLanguage("es", "US"); //Spanish
                 transactionsPath= "./src/main/resources/transacciones.csv";
                 break;
             default:
