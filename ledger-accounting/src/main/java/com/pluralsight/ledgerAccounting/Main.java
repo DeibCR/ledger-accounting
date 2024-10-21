@@ -30,7 +30,7 @@ public class Main {
         }
 
 
-  /*      //this line sof code initialize
+  /*      //this line sof code initialize the GUI
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 LedgerAccounting ledgerAccounting = new LedgerAccounting();

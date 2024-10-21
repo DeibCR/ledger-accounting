@@ -15,7 +15,6 @@ public class LedgerAccounting extends JFrame {
     private JButton accountingLedgerButton;
     private JButton addAPaymentButton;
     private JButton addADepositButton;
-    private JButton button1;
 
 
     public LedgerAccounting(){

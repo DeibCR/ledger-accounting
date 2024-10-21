@@ -27,7 +27,7 @@ When the application starts, the user is presented with the option to select one
 - **1** EN = English
 - **2** ES = Spanish
 
-![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\01.JPG)
+<img src="C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\01.JPG"/>
 
 ### Home Screen
 
@@ -35,9 +35,9 @@ Once the language option is selected, users access the Home Screen, which shows 
 - **D** EN = Add  Deposit
 - **P** ES = Add  Payment
 - **L** ES = Accounting Ledger
-- **X** ES = Exit 
+- **X** ES = Exit
 
-![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\02.JPG)
+<img src="C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\02.JPG"/>
 
 ![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\03.JPG)
 
@@ -88,8 +88,10 @@ Responsable to represent and shape objects type transaction
 
 ## Interesting Code: ResourceBundle and Locale
 
-![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\08.JPG)
+<img src="C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\08.JPG"/>
 
-![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\09.JPG)
+<img src="C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\09.JPG"/>
 
 ![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\10.JPG)
+
+![](C:\pluralsight\ledger-accounting\ledger-accounting\src\main\images\11.JPG)
