@@ -80,9 +80,6 @@ Provide with filters options for generate reports
 
 ### Transaction Class
 
-Responsable to represent and shape objects type transaction
-
-
 ### Ledger Class
 
 ### main Class
@@ -96,5 +93,5 @@ Responsable to represent and shape objects type transaction
 ![08](https://github.com/user-attachments/assets/2cd5794e-251a-4cd6-beab-cff6c70e4ffd)
 ![09](https://github.com/user-attachments/assets/c1393b6e-e69f-43b1-a5b6-5f94de0d0665)
 ![10](https://github.com/user-attachments/assets/8913aa38-66d1-4e83-a9ff-faffd21b4385)
-![11](https://github.com/user-attachments/assets/b62659a1-7d3c-49b5-9f5e-a8a2cbdeebfc)
+
 
