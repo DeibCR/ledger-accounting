@@ -228,11 +228,12 @@ public class Ledger {
                 case 3 -> yearToDate();
                 case 4 -> previousYear();
                 case 5 -> vendorsSearch(scanner);
+                case 6 -> customSearch(scanner);
                 case 0 -> {
                     System.out.println("Exiting Reports Menu");
                     counter = false;
                 }
-                default -> System.out.println("Invalid option. Please type '1' '2' '3' '4' or '5' or '0'");
+                default -> System.out.println("Invalid option. Please type '1' '2' '3' '4' '5' '6' or '0'");
             }
         }
 
@@ -347,6 +348,41 @@ public class Ledger {
         return matchingVendors;
     }
 
+    public ArrayList<Transaction> findTransactionByDescription(String description){
+        ArrayList<Transaction> matchingDescription= new ArrayList<>();
+
+        for (Transaction transaction: transactions){
+            if (transaction.getDescription().toLowerCase().contains(description.toLowerCase())){
+                matchingDescription.add(transaction);
+            }
+        }
+        return  matchingDescription;
+    }
+
+    public ArrayList<Transaction> findTransactionByAmount(double amount) {
+        ArrayList<Transaction> matchingAmount = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() == amount) {
+                matchingAmount.add(transaction);
+            }
+        }
+        return matchingAmount;
+    }
+
+    public ArrayList<Transaction> findTransactionByDate(LocalDate date) {
+        ArrayList<Transaction> matchingDate = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            if (transaction.getDate().equals(date)) {
+                matchingDate.add(transaction);
+            }
+        }
+        return matchingDate;
+    }
+
+
+
     public void vendorsSearch(Scanner scanner) {
         System.out.println(messages.getString("vendor.prompt"));
 
@@ -369,6 +405,68 @@ public class Ledger {
         }
     }
 
-}
+
+
+    public void customSearch(Scanner scanner){
+
+            System.out.println(messages.getString("custom.search1"));
+
+            System.out.println(messages.getString("search.date"));
+            String startDateInput = scanner.nextLine().trim();
+            LocalDate startDate = startDateInput.isEmpty() ? null : LocalDate.parse(startDateInput);
+
+
+            System.out.println(messages.getString("search.date1"));
+            String endDateInput = scanner.nextLine().trim();
+            LocalDate endDate = endDateInput.isEmpty() ? null : LocalDate.parse(endDateInput);
+
+
+            System.out.println(messages.getString("search.description"));
+            String description = scanner.nextLine().trim();
+
+
+            System.out.println(messages.getString("search.vendor"));
+            String vendor = scanner.nextLine().trim();
+
+
+            System.out.println(messages.getString("search.amount"));
+            String amountInput = scanner.nextLine().trim();
+            Double amount = amountInput.isEmpty() ? null : Double.parseDouble(amountInput);
+
+
+            ArrayList<Transaction> filteredTransactions = new ArrayList<>(transactions);
+
+            if (startDate != null || endDate != null) {
+                filteredTransactions.removeIf(transaction -> {
+                    LocalDate transactionDate = transaction.getDate();
+                    return (startDate != null && transactionDate.isBefore(startDate)) ||
+                            (endDate != null && transactionDate.isAfter(endDate));
+                });
+            }
+
+            if (!description.isEmpty()) {
+                filteredTransactions.removeIf(transaction -> !transaction.getDescription().toLowerCase().contains(description.toLowerCase()));
+            }
+
+            if (!vendor.isEmpty()) {
+                filteredTransactions.removeIf(transaction -> !transaction.getVendor().toLowerCase().contains(vendor.toLowerCase()));
+            }
+
+            if (amount != null) {
+                filteredTransactions.removeIf(transaction -> transaction.getAmount() != amount);
+            }
+
+            if (!filteredTransactions.isEmpty()) {
+                System.out.println(messages.getString("custom.search"));
+                filteredTransactions.forEach(System.out::println);
+            } else {
+                System.out.println(messages.getString("custom.search"));
+            }
+        }
+
+
+    }
+
+
 
 
